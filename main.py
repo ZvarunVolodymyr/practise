@@ -84,6 +84,11 @@ def merge(list_1, list_2, sort_type, ans):
         comp = comp_1
     else:
         comp = comp_2
+
+    if not comp(list_1[len(list_1) - 1], list_2[0]):
+        return [ans + 1, list_1 + list_2]
+    if not comp(list_2[len(list_1) - 1], list_1[0]):
+        return [ans + 1, list_2 + list_1]
     while left_pointer < len(list_1) or right_pointer < len(list_2):
         if left_pointer == len(list_1) or right_pointer != len(list_2) and comp(list_1[left_pointer], list_2[right_pointer]):
             new_list.append(list_2[right_pointer])
