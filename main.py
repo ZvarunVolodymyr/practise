@@ -41,7 +41,13 @@ def cin_array(n: int):
 
 def generate_array(n: int):
     a = int_input('Введіть ліву межу генерації')
-    b = int_input('Введіть праву межу генерації')
+    b = 0
+    while True:
+        b = int_input('Введіть праву межу генерації')
+        if b < a:
+            print('Не правильний ввід, спробуйте йще раз')
+            continue
+        break
     list_ = choices(range(a, b), k=n)
     print('Згенерований масив: ', end='')
     print(list_)
@@ -86,33 +92,45 @@ def merge(list_1, list_2, sort_type, ans):
         comp = comp_2
 
     if not comp(list_1[len(list_1) - 1], list_2[0]):
-        return [ans + 1, list_1 + list_2]
-    if not comp(list_2[len(list_1) - 1], list_1[0]):
-        return [ans + 1, list_2 + list_1]
+        ans[0] += 1
+        ans[1] += 1
+        return [ans, list_1 + list_2]
+
+    if not comp(list_2[len(list_2) - 1], list_1[0]):
+        ans[0] += 1
+        ans[1] += 1
+        return [ans, list_2 + list_1]
+
     while left_pointer < len(list_1) or right_pointer < len(list_2):
+        ans[1] += 1 + (left_pointer < len(list_1))
         if left_pointer == len(list_1) or right_pointer != len(list_2) and comp(list_1[left_pointer], list_2[right_pointer]):
             new_list.append(list_2[right_pointer])
+            ans[1] += 1 + 2 * (left_pointer != len(list_1))
             right_pointer += 1
             continue
+        ans[1] += 2 + (right_pointer != len(list_2))
         new_list.append(list_1[left_pointer])
         left_pointer += 1
 
-    return [ans + len(new_list), new_list]
+    ans[0] += len(new_list)
+    return [ans, new_list]
 
 
 def merge_sort(sort_type:int, array: []):
     sz = len(array)
     if sz == 1:
-        return [0, array]
-    ans = 0
+        return [[0, 0], array]
+    ans = [0, 0]
     list_1 = merge_sort(sort_type, array[:sz // 2])
     list_2 = merge_sort(sort_type, array[sz//2:])
-    ans += list_1[0] + list_2[0]
+    ans[0] = list_1[0][0] + list_2[0][0]
+    ans[1] = list_1[0][1] + list_2[0][1]
     return merge(list_1[1], list_2[1], sort_type, ans)
 
 
 while True:
     input_value = cin()
     sorted_array = merge_sort(input_value[0], input_value[1])
-    print(f'\nПосортований масив - {sorted_array[1]}\nКількість оперцій - {sorted_array[0]}')
+    print(f'\nПосортований масив - {sorted_array[1]}\nКількість оперцій додавання - {sorted_array[0][0]}'
+          f'\nКількість оперцій порівняння - {sorted_array[0][1]}')
     print('\n\n__________________________________________\n')
