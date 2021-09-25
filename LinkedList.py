@@ -33,12 +33,12 @@ class LinkedList:
                 val = func(val)
             self.push_back(val)
 
-    def __getitem__(self, pos):
-        if pos >= self.length or pos < 0:
+    def __getitem__(self, key):
+        if key >= self.length or key < 0:
             raise IndexError
 
         for i, val in enumerate(self):
-            if i == pos:
+            if i == key:
                 return val
 
     def __setitem__(self, key, value):
@@ -70,19 +70,19 @@ class LinkedList:
     def __iter__(self):
         return ListIter(self.start)
 
-    def copy_from(self, arr=None):
+    def copy_from(self, list=None):
         self.clear()
-        if arr is None:
+        if list is None:
             return
-        for i in arr:
+        for i in list:
             self.push_back(i)
 
-    def get_node(self, pos):
-        if pos < 0 or pos >= self.length:
+    def get_node(self, key):
+        if key < 0 or key >= self.length:
             raise IndexError
         this = self.start
         for i in range(self.length):
-            if i == pos:
+            if i == key:
                 return this
             this = this.next
 
