@@ -178,3 +178,16 @@ class LinkedList:
         for i in self:
             min_ = min(i, min_)
         return min_
+
+    def get_answer_for_task(self):
+        max_ = self.max_element()
+        min_ = self.min_element()
+
+        coefficient = 0
+        if self[0] >= 0:
+            coefficient = min_ * min_
+        else:
+            coefficient = max_ * max_
+
+        for i in range(self.length):
+            self[i] *= coefficient
