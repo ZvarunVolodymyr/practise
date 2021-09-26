@@ -1,7 +1,9 @@
 def is_str(n:str, value=None):
     return n
 
+
 def is_float_number(n:str, value=None):
+    n = n.strip()
     try:
         return float(n)
     except ValueError:
@@ -9,6 +11,7 @@ def is_float_number(n:str, value=None):
 
 
 def is_int_number(n:str, value=None):
+    n = n.strip()
     try:
         return int(n)
     except ValueError:
@@ -16,12 +19,14 @@ def is_int_number(n:str, value=None):
 
 
 def is_natural_number(n:str, value=None):
+    n = n.strip()
     if not(is_int_number(n) and int(n) > 0):
         raise ValueError
     return int(n)
 
 
 def is_menu(n:str, value=None):
+    n = n.strip()
     if n != '1' and n != '2' and n != 'exit':
         raise ValueError
     return n
@@ -61,7 +66,7 @@ def input_validation(text="", additional_condition=is_str, *value_for_conditiona
     print(text, end=f'{slesh_n if text != "" else ""}')
     while True:
         try:
-            return additional_condition(input().strip(), value_for_conditional)
+            return additional_condition(input(), value_for_conditional)
         except ValueError:
             print('не правильний ввід, спробуйте йще раз')
         except KeyboardInterrupt:
