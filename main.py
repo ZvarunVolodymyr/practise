@@ -17,7 +17,7 @@ def cin():
         list_.input(f'Введіть {m} елемента, кожен елемент в одному рядку', m, validation.is_float_number)
         # також можна записати так
         # list_ = LinkedList()
-        # list_.input('Введіть масив', type=float, additional_condition=validation.is_float_number, input_size=True)
+        # list_.input('Введіть масив', additional_condition=validation.is_float_number, input_size=True)
         return list_
     if n == '2':
         left = validation.input_validation('Введіть ліву межу генерації(ціле число)', validation.is_int_number)
