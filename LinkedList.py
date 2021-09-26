@@ -160,8 +160,10 @@ class LinkedList:
         for i in range(size):
             self.push_back(choice(range(left, right)))
 
-    def input(self, size, text='', type=str, additional_condition=None, split_symbol=' ', is_strip=True):
-        self.copy_from(validation.array_input(text, size, additional_condition, type, split_symbol, is_strip))
+    def input(self, text='', size=0, type=str, additional_condition=None, split_symbol=' ', input_size=False):
+        if input_size:
+            size = int(validation.input_validation('Введіть розмір масиву', additional_condition=validation.is_natural_number))
+        self.copy_from(validation.array_input(text, size, additional_condition, type, split_symbol))
 
     def max_element(self):
         if self.start is None:

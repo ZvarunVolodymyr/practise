@@ -1,5 +1,5 @@
 
-def is_float_number(n:str, value = None):
+def is_float_number(n:str, value=None):
     try:
         k = float(n)
     except ValueError:
@@ -7,7 +7,7 @@ def is_float_number(n:str, value = None):
     return True
 
 
-def is_int_number(n:str, value = None):
+def is_int_number(n:str, value=None):
     try:
         k = int(n)
     except ValueError:
@@ -15,11 +15,11 @@ def is_int_number(n:str, value = None):
     return True
 
 
-def is_natural_number(n:str, value = None):
+def is_natural_number(n:str, value=None):
     return is_int_number(n, None) and int(n) > 0
 
 
-def is_menu(n:str, value = None):
+def is_menu(n:str, value=None):
     return n == '1' or n == '2' or n == 'exit'
 
 
@@ -38,9 +38,9 @@ def is_valid_array(n: str, conditional: []):
         return True
     s = []
     if conditional[1] == -1:
-        s = n.split()
+        s = n.split(conditional[2])
     else:
-        s = n.split()[:conditional[1]]
+        s = n.split(conditional[2])[:conditional[1]]
         if len(s) < conditional[1]:
             return False
     for i in s:
@@ -55,14 +55,13 @@ def is_valid(n: str, additional_condition=None, value_for_conditional=None):
     return additional_condition(n, value_for_conditional)
 
 
-def input_validation(text="", additional_condition=None, is_strip=True, *value_for_conditional):
+def input_validation(text="", additional_condition=None, *value_for_conditional):
     slesh_n = '\n'
     print(text, end=f'{slesh_n if text != "" else ""}')
     while True:
         try:
             n = input()
-            if is_strip:
-                n = n.strip()
+            n = n.strip()
             if not is_valid(n, additional_condition, value_for_conditional):
                 int('error')
             return n
@@ -73,11 +72,9 @@ def input_validation(text="", additional_condition=None, is_strip=True, *value_f
             exit()
 
 
-def array_input(text="", size=-1, additional_condition=None, type=str, split_symbol=' ', is_strip=True):
-    func = type
-    if is_strip:
-        func = lambda x: type(x.strip())
-    list_ = input_validation(text, is_valid_array, is_strip, additional_condition, size).split()
+def array_input(text="", size=-1, additional_condition=None, type=str, split_symbol=' '):
+    func = lambda x: type(x.strip())
+    list_ = input_validation(text, is_valid_array, additional_condition, size, split_symbol).split(split_symbol)
     if size != -1:
         list_ = list_[:size]
     list_ = list(map(func, list_))
