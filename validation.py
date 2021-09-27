@@ -1,3 +1,6 @@
+from LinkedList import LinkedList
+
+
 def is_str(n:str, value=None):
     return n
 
@@ -41,16 +44,11 @@ def is_greater_then(n:str, value:[]):
 
 
 def is_valid_array(n: str, conditional: []):
-    s = []
-    if conditional[1] == -1:
-        s = n.split(conditional[2])
-    else:
-        s = n.split(conditional[2])[:conditional[1]]
-        if len(s) < conditional[1]:
+    s = LinkedList(map(conditional[0], filter(lambda x: x != '', n.split(conditional[2]))))
+    if conditional[1] != -1:
+        if len(s) != conditional[1]:
+            print(len(s))
             raise ValueError
-    for i in range(len(s)):
-        s[i].strip()
-        s[i] = conditional[0](s[i])
     return s
 
 
@@ -76,6 +74,4 @@ def input_validation(text="", additional_condition=is_str, *value_for_conditiona
 
 def array_input(text="", size=-1, additional_condition=is_str, split_symbol=' '):
     list_ = input_validation(text, is_valid_array, additional_condition, size, split_symbol)
-    if size != -1:
-        list_ = list_[:size]
     return list_
