@@ -1,35 +1,31 @@
-import validation
-from LinkedList import LinkedList
+def main_function(n: int, m: int):
+    if n > m:
+        n, m = m, n
+
+    if n == 1:
+        return m * 4
+
+    answer = 2 * (n * (m + 1) + m)
+
+    return answer
+
+
+def input_int_number(name=''):
+    print(f"Введіть натуральне число {name}(без зайвих символів)")
+    while True:
+        try:
+            new_nam = int(input())
+            if new_nam <= 0:
+                int('error')
+            return new_nam
+        except ValueError:
+            print('Неправильний ввід, спробуйте йще раз')
+            continue
 
 
 def cin():
-    n = validation.input_validation('Ведіть(без лапок):\n'
-                                    '"1" - ввести масив\n'
-                                    '"2" - згенерувати масив\n'
-                                    '"exit" - вихід з програми',
-                                    validation.is_menu)
-    if n == 'exit':
-        print('програма завершила свою роботу')
-        exit()
-    m = validation.input_validation('Введіть ціле число - розмір масиву', validation.is_natural_number)
-    if n == '1':
-        list_ = LinkedList()
-        list_.input(f'Введіть {m} елемента, кожен елемент в одному рядку', m, validation.is_float_number)
-        # також можна записати так
-        # list_ = LinkedList()
-        # list_.input('Введіть масив', additional_condition=validation.is_float_number, input_size=True)
-        return list_
-    if n == '2':
-        left = validation.input_validation('Введіть ліву межу генерації(ціле число)', validation.is_int_number)
-        right = validation.input_validation('Введіть праву межу генерації(ціле число)', validation.is_greater_then, left)
-        list_ = LinkedList()
-        list_.generate(m, left, right)
-        print('Згенерований масив :', list_)
-        return list_
+    return [input_int_number('n'), input_int_number('m')]
 
 
-while True:
-    list_ = cin()
-    list_.get_answer_for_task()
-    print(list_)
-
+input_value = cin()
+print(main_function(input_value[0], input_value[1]))
