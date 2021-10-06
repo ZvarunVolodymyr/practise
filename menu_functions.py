@@ -54,8 +54,7 @@ def generate(func):
 
 @generate
 def generator(m, left, right):
-    list_ = LinkedList()
-    list_.push_back_generator(array_generate.generator_generate(m, left, right))
+    list_ = LinkedList(array_generate.generator_generate(m, left, right))
     return list_
 
 
