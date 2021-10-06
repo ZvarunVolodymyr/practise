@@ -1,3 +1,5 @@
+import math
+import random
 from random import choice
 import validation
 
@@ -23,6 +25,7 @@ class ListIter:
 class LinkedList:
     start: Node = None
     end: Node = None
+    __iter: Node = None
     length = 0
 
     def __init__(self, arr=None, func=None):
@@ -94,6 +97,10 @@ class LinkedList:
         self.end.next = Node(val=new_val, previous=self.end)
         self.end = self.end.next
 
+    def push_back_generator(self, val):
+        for i in val:
+            self.push_back(i)
+
     def pop_back(self):
         if self.length == 0:
             return
@@ -155,10 +162,9 @@ class LinkedList:
         for i in range(self.length):
             self.pop_back()
 
-    def generate(self, size, left, right):
-        self.clear()
+    def generate(self, size, left, right, func=random.randint):
         for i in range(size):
-            self.push_back(choice(range(left, right)))
+            yield func(left, right)
 
     def input(self, text='', size=0, additional_condition=None, split_symbol=' ', input_size=False):
         if input_size:
@@ -182,6 +188,8 @@ class LinkedList:
         return min_
 
     def get_answer_for_task(self):
+        if self.length == 0:
+            return 'масив пустий'
         max_ = self.max_element()
         min_ = self.min_element()
 
@@ -190,6 +198,7 @@ class LinkedList:
             coefficient = min_ * min_
         else:
             coefficient = max_ * max_
-
+        answer = LinkedList()
         for i in range(self.length):
-            self[i] *= coefficient
+            answer.push_back(self[i] * coefficient)
+        return answer
