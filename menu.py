@@ -6,7 +6,7 @@ from menu_functions import exit_, back_, write_menu, generator, iterator, add_to
 
 def menu(list_, text, pages):
     while True:
-        n = validation.input_validation(validation.is_menu, pages.keys(), text=text)
+        n = validation.is_menu(pages.keys(), text=text, function='input')
         list__ = pages[n](list_)
         if list__ is None:
             return [None, list_]
