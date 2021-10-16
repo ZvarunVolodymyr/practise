@@ -132,10 +132,11 @@ def has_attribute(func=lambda x: x):
 @call_decorate
 def is_valid_array(func=lambda x: x):
     @function_decorate
-    @many_decorator(is_empty, is_empty, is_natural_number, is_empty)
-    def decorator(list_, func_, size = -1, split_ = ''):
+    def decorator(list_, func_, size=None, split_=' '):
+        if not size is None:
+            size = is_natural_number(size)
         s = []
-        if size == -1:
+        if size is None:
             s = list_.split(split_)
         else:
             s = list_.split(split_)

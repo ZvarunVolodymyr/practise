@@ -46,4 +46,4 @@ class from_file(strategy):
         if new_list is None:
             return self.list_
         k = validation.is_int_in_range(0, len(self.list_), text='Ведіть позицію для вставки', function='input')
-        self.list_.insert_list(k, *new_list)
+        self.list_.insert(k, *new_list)

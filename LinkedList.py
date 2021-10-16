@@ -141,6 +141,8 @@ class LinkedList:
     def remove(self, pos1, pos2=None):
         if pos2 is None:
             pos2 = pos1 + 1
+        pos1 = validation.is_int_in_range(0, self.length - 1)
+        pos2 = validation.is_int_in_range(pos1, self.length - 1)
         this = self.get_node(pos1)
         i = -1
         for pos in range(pos1, pos2):
