@@ -133,7 +133,7 @@ def has_attribute(func=lambda x: x):
 def is_valid_array(func=lambda x: x):
     @function_decorate
     @many_decorator(is_empty, is_empty, is_natural_number, is_empty)
-    def decorator(list_, func_, size, split_ = ''):
+    def decorator(list_, func_, size = -1, split_ = ''):
         s = []
         if size == -1:
             s = list_.split(split_)
@@ -190,6 +190,16 @@ def is_int_lower(func=lambda x: x):
         return func(val)
     return decorator
 
+
+@call_decorate
+def is_int_in_range(func=lambda x: x):
+    @function_decorate
+    @many_decorator(is_int_number, is_int_number, is_int_number)
+    def decorator(val, a, b):
+        if not (a <= val <= b):
+            raise ValueError('число виходить за межі')
+        return func(val)
+    return decorator
 
 
 def was_error(message='ПОМИЛКА', file=''):

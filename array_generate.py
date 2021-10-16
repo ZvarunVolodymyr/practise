@@ -35,4 +35,5 @@ def iter_generate(size, left, right, func=random.randint):
     list_ = LinkedList.LinkedList()
     for i in iter_generate_class(size, left, right, func):
         list_.push_back(i)
+    list_ = list_
     return list_

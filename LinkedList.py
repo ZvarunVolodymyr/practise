@@ -1,3 +1,4 @@
+import strategy
 import validation
 
 
@@ -24,8 +25,16 @@ class LinkedList:
     start: Node = None
     end: Node = None
     length = 0
+    strategy = None
+
+    def set_strategy(self, Class):
+        self.strategy = Class(self)
+
+    def execute_strategy(self):
+        return self.strategy.func()
 
     def __init__(self, arr=None, func=lambda x: x):
+        self.strategy = strategy.generate_iterator(self)
         if arr is None:
             return
         self.copy_from(arr)
@@ -68,13 +77,14 @@ class LinkedList:
                 return this
             this = this.next
 
-    def push_back(self, new_val):
-        self.length += 1
-        if self.start is None:
-            self.start = self.end = Node(val=new_val)
-            return
-        self.end.next = Node(val=new_val, previous=self.end)
-        self.end = self.end.next
+    def push_back(self, *val):
+        for new_val in val:
+            self.length += 1
+            if self.start is None:
+                self.start = self.end = Node(val=new_val)
+                continue
+            self.end.next = Node(val=new_val, previous=self.end)
+            self.end = self.end.next
 
     def __add__(self, val):
         for i in val:
@@ -90,13 +100,15 @@ class LinkedList:
             return
         self.end.next = None
 
-    def push_front(self, new_val):
-        self.length += 1
-        if self.start is None:
-            self.start = self.end = Node(val=new_val)
-            return
-        self.start.previous = Node(val=new_val, next=self.start)
-        self.start = self.start.previous
+    def push_front(self, *val):
+        for i in range(len(val) - 1, -1, -1):
+            new_val = val[i]
+            self.length += 1
+            if self.start is None:
+                self.start = self.end = Node(val=new_val)
+                continue
+            self.start.previous = Node(val=new_val, next=self.start)
+            self.start = self.start.previous
 
     def pop_front(self):
         if self.length == 0:
@@ -108,33 +120,42 @@ class LinkedList:
             return
         self.start.previous = None
 
-    def insert(self, pos, new_val):
+    def insert(self, pos, *new_val):
         if not (0 <= pos <= self.length):
             raise IndexError
         if pos == self.length:
-            self.push_back(new_val)
+            self.push_back(*new_val)
             return
         if pos == 0:
-            self.push_front(new_val)
+            self.push_front(*new_val)
             return
         this = self.get_node(pos)
-        this.previous.next = Node(new_val, this.previous, this)
-        this.previous = this.previous.next
-        self.length += 1
+        this = this.previous
+        for i in new_val:
+            new = Node(i, this, this.next)
+            this.next.previous = new
+            this.next = new
+            this = this.next
+            self.length += 1
 
-    def remove(self, pos):
-        if not (0 <= pos < self.length):
-            raise IndexError
-        if pos == self.length - 1:
-            self.pop_back()
-            return
-        if pos == 0:
-            self.pop_front()
-            return
-        this = self.get_node(pos)
-        this.previous.next = this.next
-        this.next.previous = this.previous
-        self.length -= 1
+    def remove(self, pos1, pos2=None):
+        if pos2 is None:
+            pos2 = pos1 + 1
+        this = self.get_node(pos1)
+        i = -1
+        for pos in range(pos1, pos2):
+            i += 1
+            pos -= i
+            if pos == self.length - 1:
+                self.pop_back()
+                continue
+            if pos == 0:
+                self.pop_front()
+                continue
+            this.previous.next = this.next
+            this.next.previous = this.previous
+            this = this.next
+            self.length -= 1
 
     def clear(self):
         for i in range(self.length):
