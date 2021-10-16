@@ -17,7 +17,7 @@ class strategy:
 def generate_input(size):
     n = validation.is_natural_number(function='input', text='Введіть кількість елементів')
     a = validation.is_int_number(function='input', text='Введіть ліву межу генерації')
-    b = validation.is_int_number(function='input', text='Введіть праву межу генерації')
+    b = validation.is_int_greater(a, function='input', text='Введіть праву межу генерації')
     k = validation.is_int_in_range(0, size, text='Ведіть позицію для вставки', function='input')
     n += 1
     return n, a, b, k
