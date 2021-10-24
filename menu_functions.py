@@ -1,3 +1,6 @@
+import functools
+
+import strategy
 import validation
 from LinkedList import LinkedList
 import array_generate
@@ -20,45 +23,34 @@ def get_answer(list_):
     print('*' * mx)
     print(s_1 + '\n' + s_2)
     print('*' * mx)
-    return list_
 
 
-def add_to_list(list_):
-    k_pos = validation.input_validation(validation.is_lower_then, [len(list_)], text='Ведіть позицію: ')
-    list_.insert(k_pos, validation.input_validation(validation.is_float_number, text='Ведіть значення '))
-    return list_
+def write(list_):
+    list_.set_strategy(strategy.from_file)
 
 
 def remove_from_list(list_):
-    k_pos = validation.input_validation(validation.is_lower_then, [len(list_) - 1], text='Ведіть позицію: ')
+    k_pos = validation.is_int_in_range(0, len(list_) - 1, text='Ведіть позицію: ', function='input')
     list_.remove(k_pos)
-    return list_
 
 
-def write_menu(list_):
-    list_ = LinkedList()
-    m = validation.input_validation(validation.is_natural_number, text='Введіть ціле число - розмір масиву')
-    list_.input(f'Введіть {m} елемента, кожен елемент в одному рядку', m, validation.is_float_number)
-    return list_
+def remove_in_range(list_):
+    a = validation.is_int_in_range(0, len(list_) - 1, text='Введіть ліву межу до видялення', function='input')
+    b = validation.is_int_in_range(a + 1, len(list_), text='Введіть праву межу до видялення', function='input')
+    list_.remove(a, b)
 
 
-def generate(func):
-    def decorator(list_):
-        m = validation.input_validation(validation.is_natural_number, text='Введіть ціле число - розмір масиву')
-        left = validation.input_validation(validation.is_int_number, text='Введіть ліву межу генерації(ціле число)')
-        right = validation.input_validation(validation.is_greater_then, [left],
-                                            text='Введіть праву межу генерації(ціле число)')
-        return func(m, left, right)
-    return decorator
+def update(list_):
+    list_.execute_strategy()
 
 
-@generate
-def generator(m, left, right):
-    list_ = LinkedList(array_generate.generator_generate(m, left, right))
-    return list_
+def generator(list_):
+    list_.set_strategy(strategy.generate_generator)
 
 
-@generate
-def iterator(m, left, right):
-    list_ = array_generate.iter_generate(m, left, right)
-    return list_
+def iterator(list_):
+    list_.set_strategy(strategy.generate_iterator)
+
+
+def print_list(list_):
+    print(list_)

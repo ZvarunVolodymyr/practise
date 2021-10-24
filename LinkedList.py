@@ -1,7 +1,6 @@
-import math
-import random
-from random import choice
+import strategy
 import validation
+
 
 class Node:
     def __init__(self, val=None, previous=None, next=None):
@@ -25,41 +24,33 @@ class ListIter:
 class LinkedList:
     start: Node = None
     end: Node = None
-    __iter: Node = None
     length = 0
+    strategy = None
 
-    def __init__(self, arr=None, func=None):
+    def set_strategy(self, Class):
+        self.strategy = Class(self)
+
+    def execute_strategy(self):
+        return self.strategy.func()
+
+    def __init__(self, arr=None, func=lambda x: x):
+        self.strategy = strategy.generate_iterator(self)
         if arr is None:
             return
-        for val in arr:
-            if func is not None:
-                val = func(val)
-            self.push_back(val)
+        self.copy_from(arr)
 
     def __getitem__(self, key):
-        if key >= self.length or key < 0:
-            raise IndexError
-
-        for i, val in enumerate(self):
-            if i == key:
-                return val
+        return self.get_node(key).val
 
     def __setitem__(self, key, value):
-        if key >= self.length or key < 0:
-            raise IndexError
-        this = self.start
-        for i in range(self.length):
-            if i == key:
-                this.val = value
-                return
-            this = this.next
+        this = self.get_node(key)
+        this.val = value
+
+    def __iter__(self):
+        return ListIter(self.start)
 
     def __str__(self):
-        s = '['
-        this = self.start
-        for val in self:
-            s += str(val) + ', '
-        s = s[:-2] + ']'
+        s = '[' + ', '.join(str(i) for i in self) + ']'
         if self.length == 0:
             s = '[]'
         return s
@@ -70,18 +61,15 @@ class LinkedList:
     def __len__(self):
         return self.length
 
-    def __iter__(self):
-        return ListIter(self.start)
-
-    def copy_from(self, list=None):
+    def copy_from(self, list_=None):
         self.clear()
-        if list is None:
+        if list_ is None:
             return
-        for i in list:
+        for i in list_:
             self.push_back(i)
 
     def get_node(self, key):
-        if key < 0 or key >= self.length:
+        if not (0 <= key < self.length):
             raise IndexError
         this = self.start
         for i in range(self.length):
@@ -89,15 +77,16 @@ class LinkedList:
                 return this
             this = this.next
 
-    def push_back(self, new_val):
-        self.length += 1
-        if self.start is None:
-            self.start = self.end = Node(val=new_val)
-            return
-        self.end.next = Node(val=new_val, previous=self.end)
-        self.end = self.end.next
+    def push_back(self, *val):
+        for new_val in val:
+            self.length += 1
+            if self.start is None:
+                self.start = self.end = Node(val=new_val)
+                continue
+            self.end.next = Node(val=new_val, previous=self.end)
+            self.end = self.end.next
 
-    def push_back_generator(self, val):
+    def __add__(self, val):
         for i in val:
             self.push_back(i)
 
@@ -111,13 +100,15 @@ class LinkedList:
             return
         self.end.next = None
 
-    def push_front(self, new_val):
-        self.length += 1
-        if self.start is None:
-            self.start = self.end = Node(val=new_val)
-            return
-        self.start.previous = Node(val=new_val, next=self.start)
-        self.start = self.start.previous
+    def push_front(self, *val):
+        for i in range(len(val) - 1, -1, -1):
+            new_val = val[i]
+            self.length += 1
+            if self.start is None:
+                self.start = self.end = Node(val=new_val)
+                continue
+            self.start.previous = Node(val=new_val, next=self.start)
+            self.start = self.start.previous
 
     def pop_front(self):
         if self.length == 0:
@@ -129,76 +120,72 @@ class LinkedList:
             return
         self.start.previous = None
 
-    def insert(self, pos, new_val):
-        if pos > self.length or pos < 0:
+    def insert(self, pos, *new_val):
+        if not (0 <= pos <= self.length):
             raise IndexError
         if pos == self.length:
-            self.push_back(new_val)
+            self.push_back(*new_val)
             return
         if pos == 0:
-            self.push_front(new_val)
+            self.push_front(*new_val)
             return
         this = self.get_node(pos)
-        this.previous.next = Node(new_val, this.previous, this)
-        this.previous = this.previous.next
-        self.length += 1
+        this = this.previous
+        for i in new_val:
+            new = Node(i, this, this.next)
+            this.next.previous = new
+            this.next = new
+            this = this.next
+            self.length += 1
 
-    def remove(self, pos):
-        print(pos, self.length)
-        if pos >= self.length or pos < 0:
-            raise IndexError
-        if pos == self.length - 1:
-            self.pop_back()
-            return
-        if pos == 0:
-            self.pop_front()
-            return
-        this = self.get_node(pos)
-        this.previous.next = this.next
-        this.next.previous = this.previous
-        self.length -= 1
+    def remove(self, pos1, pos2=None):
+        if pos2 is None:
+            pos2 = pos1 + 1
+        pos1 = validation.is_int_in_range(0, self.length - 1)
+        pos2 = validation.is_int_in_range(pos1, self.length - 1)
+        this = self.get_node(pos1)
+        i = -1
+        for pos in range(pos1, pos2):
+            i += 1
+            pos -= i
+            if pos == self.length - 1:
+                self.pop_back()
+                continue
+            if pos == 0:
+                self.pop_front()
+                continue
+            this.previous.next = this.next
+            this.next.previous = this.previous
+            this = this.next
+            self.length -= 1
 
     def clear(self):
         for i in range(self.length):
             self.pop_back()
 
-    def generate(self, size, left, right, func=random.randint):
-        for i in range(size):
-            yield func(left, right)
-
     def input(self, text='', size=0, additional_condition=None, split_symbol=' ', input_size=False):
         if input_size:
-            size = int(validation.input_validation('Введіть розмір масиву', additional_condition=validation.is_natural_number))
-        self.copy_from(validation.array_input(text, size, additional_condition, split_symbol))
+            size = validation.is_natural_number(text='Введіть розмір масиву', function='input')
+        self.copy_from(validation.is_valid_array(additional_condition, size, split_symbol, text=text, function='input'))
 
-    def max_element(self):
+    def use_func(self, func):
         if self.start is None:
             return None
-        max_ = self.start.val
+        val = self.start.val
         for i in self:
-            max_ = max(i, max_)
-        return max_
-
-    def min_element(self):
-        if self.start is None:
-            return None
-        min_ = self.start.val
-        for i in self:
-            min_ = min(i, min_)
-        return min_
+            val = func(val, i)
+        return val
 
     def get_answer_for_task(self):
         if self.length == 0:
             return 'масив пустий'
-        max_ = self.max_element()
-        min_ = self.min_element()
+        max_ = self.use_func(lambda a, b: max(a, b))
+        min_ = self.use_func(lambda a, b: min(a, b))
 
         coefficient = 0
         if self[0] >= 0:
             coefficient = min_ * min_
         else:
             coefficient = max_ * max_
-        answer = LinkedList()
-        for i in range(self.length):
-            answer.push_back(self[i] * coefficient)
-        return answer
+        ans = LinkedList(self[i] * coefficient for i in range(self.length))
+        return ans

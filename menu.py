@@ -1,55 +1,42 @@
 import menu_functions
 import validation
 from LinkedList import LinkedList
-from menu_functions import exit_, back_, write_menu, generator, iterator, add_to_list, remove_from_list
+from menu_functions import exit_, back_, get_answer, write, update, remove_from_list, remove_in_range, print_list, \
+                            iterator, generator
 
 
 def menu(list_, text, pages):
     while True:
-        n = validation.input_validation(validation.is_menu, pages.keys(), text=text)
-        list__ = pages[n](list_)
-        if list__ is None:
-            return [None, list_]
-        if len(list__) == 0 or not list__[0] is None:
-            return list__
-        list_ = list__[1]
+        n = validation.is_menu(pages.keys(), text=text, function='input')
+        is_break = pages[n](list_)
+        if is_break is None:
+            return True
+        if not is_break:
+            return False
+        return
 
 
 def main_menu(list_):
-    pages = {'new': new_menu, 'edit':change_menu, 'exit': exit_}
-    text = 'Ведіть:\n' \
-           'new - новий масив\n' \
-           'edit - змінити масив\n' \
-           'exit - вихід з програми'
-    list_ = menu(list_, text, pages)
-    return menu_functions.get_answer(list_)
-
-
-def change_menu(list_):
-    pages = {'add': add_to_list, 'remove': remove_from_list, 'back': back_, 'exit': exit_}
-    text = 'Ведіть:\n' \
-           'add - додати елемент\n' \
-           'remove - згенерувати масив\n' \
-           'back - до попередньго меню\n' \
-           'exit - вихід з програми'
-    return menu(list_, text, pages)
-
-
-def new_menu(list_):
-    pages = {'write': write_menu, 'generate': generate_menu, 'back': back_, 'exit': exit_}
-    text = 'Ведіть:\n' \
-           'write - ввести масив\n' \
-           'generate - згенерувати масив\n' \
-           'back - до попередньго меню\n' \
+    pages = {'generate': generate_menu, 'exit': exit_, 'task': get_answer, 'write': write,
+             'update': update, 'remove': remove_from_list, 'remove_in_range': remove_in_range,
+             'print': print_list}
+    text = '\nВедіть:\n' \
+           'generate - обрати метод "генерація" \n' \
+           'write - обрати метод "ввід"\n' \
+           'update - виконати обраний метод\n' \
+           'remove - видалити 1 змінну\n' \
+           'remove_in_range - видалити декілька змінних [start, end)\n' \
+           'task - дати відповідь на завдання\n' \
+           'print - вивести масив\n' \
            'exit - вихід з програми'
     return menu(list_, text, pages)
 
 
 def generate_menu(list_):
     pages = {'iterator': iterator, 'generator': generator, 'back': back_, 'exit': exit_}
-    text = 'Ведіть:\n' \
-           'iterator - ввести масив\n' \
-           'generator - згенерувати масив\n' \
+    text = '\nВедіть:\n' \
+           'iterator - обрати генерацію ітератором\n' \
+           'generator - обрати генерацію генератором\n' \
            'back - до попередньго меню\n' \
            'exit - вихід з програми'
     return menu(list_, text, pages)
