@@ -1,34 +1,31 @@
-print('Введіть 2 натуральні числа через пробіл')
-flag = True
-while(flag):
-    try:
-        n, m = map(int, input().split())
-        if n <= 0 or m <= 0:
-            int('error')
-        flag = False
-    except ValueError:
-        print('Неправильний ввід, спробуйте йще раз')
-        continue
+def main_function(n: int, m: int):
+    if n > m:
+        n, m = m, n
 
-if n > m:
-    n, m = m, n
+    if n == 1:
+        return m * 4
 
-if n == 1:
-    print(m * 4)
-    exit()
+    answer = 2 * (n * (m + 1) + m)
 
-answer = 2 * (n * (m + 1) + m)
-additional = 0
+    return answer
 
-if n % 2 != 0:
-    additional += m
 
-if m % 2 != 0:
-    additional += n
+def input_int_number(name=''):
+    print(f"Введіть натуральне число {name}(без зайвих символів)")
+    while True:
+        try:
+            new_nam = int(input())
+            if new_nam <= 0:
+                int('error')
+            return new_nam
+        except ValueError:
+            print('Неправильний ввід, спробуйте йще раз')
+            continue
 
-if additional != 0:
-    additional -= 2
 
-answer += additional
+def cin():
+    return [input_int_number('n'), input_int_number('m')]
 
-print(answer)
+
+input_value = cin()
+print(main_function(input_value[0], input_value[1]))
