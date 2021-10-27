@@ -1,34 +1,27 @@
-print('Введіть 2 натуральні числа через пробіл')
-flag = True
-while(flag):
-    try:
-        n, m = map(int, input().split())
-        if n <= 0 or m <= 0:
-            int('error')
-        flag = False
-    except ValueError:
-        print('Неправильний ввід, спробуйте йще раз')
-        continue
+import copy
 
-if n > m:
-    n, m = m, n
+import event_info_format
+import help_function
+from observer import observerManager, eventManager
 
-if n == 1:
-    print(m * 4)
-    exit()
+import menu
+import LinkedList
 
-answer = 2 * (n * (m + 1) + m)
-additional = 0
+list_ = LinkedList.LinkedList()
+# list_.remove(1, 3)
+# print(list_)
 
-if n % 2 != 0:
-    additional += m
+events = eventManager()
+events.add_func('insert', 'insert_log', event_info_format.add_log_info)
+events.add_func('remove', 'remove_log', event_info_format.remove_log_info)
+observer = observerManager(events)
+observer.add_member('insert', 'insert_log', help_function.insert_logging)
+observer.add_member('remove', 'remove_log', help_function.remove_logging)
 
-if m % 2 != 0:
-    additional += n
+file = open('output.txt', 'w')
+file.write('')
+file.close()
 
-if additional != 0:
-    additional -= 2
+while True:
+    menu.main_menu(list_, observer)
 
-answer += additional
-
-print(answer)
