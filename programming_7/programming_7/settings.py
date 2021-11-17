@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 import os
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -112,11 +113,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DATE_FORMAT': "%d.%m.%Y",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+      ),
 }
+JWT_AUTH = {
 
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    #'JWT_SECRET_KEY': os.getenv('KEYWORD')
+}
+load_dotenv(find_dotenv('.gitignore/security.env'))
+JWT_SECRET_KEY = os.getenv('KEYWORD')
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
+AUTH_USER_MODEL = 'user.User'
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
