@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'id_of_certificate', 'first_name', 'last_name', 'email', 'password')
-        write_only_fields = ["password"]
+        extra_kwargs = {'password': {'write_only': True}}
 
     def validator(self, data, **obj):
         return_ = validator_(self, data, validation)
@@ -25,13 +25,3 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'id_of_certificate': 'немає сертифікати з таким ід'})
 
         return return_
-
-
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('email', 'password')
-        write_only_fields = ["password"]
-
-    def validator(self, data):
-        return validator_(self, data, validation)
