@@ -113,20 +113,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DATE_FORMAT': "%d.%m.%Y",
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-      ),
+        'user.beckends.JWTAuthentication',
+        )
 }
+load_dotenv(find_dotenv('.gitignore/security.env'))
 JWT_AUTH = {
 
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    #'JWT_SECRET_KEY': os.getenv('KEYWORD')
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_SECRET_KEY': os.getenv('KEYWORD')
 }
-load_dotenv(find_dotenv('.gitignore/security.env'))
-JWT_SECRET_KEY = os.getenv('KEYWORD')
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 AUTH_USER_MODEL = 'user.User'
