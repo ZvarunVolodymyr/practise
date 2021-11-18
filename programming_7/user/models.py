@@ -1,24 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
-
-
-# class UserManaget(BaseUserManager):
-#     def create_user(self, email, password=None):
-#         if email is None:
-#             raise TypeError('пошта має існувати')
-#
-#
-#
-#
-#
-# class User(models.Model):
-#     id_of_certificate = models.IntegerField(unique=True)
-#     first_name = models.CharField(max_length=70)
-#     last_name = models.CharField(max_length=70)
-#     email = models.EmailField(max_length=70)
-#     password = models.CharField(max_length=70)
-
-from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from user import security
