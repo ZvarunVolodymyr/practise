@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+import os
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'certificate.apps.CertificateConfig',
+    'user.apps.UserConfig',
     'drf_yasg',
 ]
 
@@ -76,14 +80,15 @@ WSGI_APPLICATION = 'programming_7.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+load_dotenv(find_dotenv('.gitignore/.env'))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'vaccine_data',
-        'USER': 'postgres',
-        'PASSWORD': 'admin68989279',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.getenv('ENGINE'),
+        'NAME': os.getenv('NAME'),
+        'USER': os.getenv('USERNAME'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
     }
 }
 
@@ -108,11 +113,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DATE_FORMAT': "%d.%m.%Y",
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'user.beckends.JWTAuthentication',
+        )
 }
+load_dotenv(find_dotenv('.gitignore/security.env'))
+JWT_AUTH = {
 
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_SECRET_KEY': os.getenv('KEYWORD')
+}
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
+AUTH_USER_MODEL = 'user.User'
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
