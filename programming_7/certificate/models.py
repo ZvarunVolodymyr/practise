@@ -2,7 +2,9 @@ from django.db import models
 
 
 class Certificate(models.Model):
+    type = models.CharField(max_length=20)
     username = models.CharField(max_length=70)
+    user_id = models.IntegerField()
     birth_date = models.DateField()
     start_date = models.DateField()
     end_date = models.DateField()

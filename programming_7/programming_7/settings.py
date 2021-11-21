@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'certificate.apps.CertificateConfig',
+    'product.apps.ProductConfig',
     'user.apps.UserConfig',
     'drf_yasg',
 ]
@@ -129,6 +131,16 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_ALGORITHM': 'HS256',
     'JWT_SECRET_KEY': os.getenv('KEYWORD')
+}
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
