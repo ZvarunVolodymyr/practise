@@ -10,7 +10,7 @@ from helping_func.security import JWT_decode
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'birth_date')
+        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'birth_date', 'orders_count')
         extra_kwargs = {'password': {'write_only': True}}
 
     def validator(self, data, **obj):
@@ -20,12 +20,25 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'email': 'ця пошта вже зайнята'})
         except ObjectDoesNotExist:
             pass
-        try:
-            obj['Certificate'].get(pk=data['id_of_certificate'])
-        except ObjectDoesNotExist:
-            raise serializers.ValidationError({'id_of_certificate': 'немає сертифікати з таким ід'})
 
         return return_
+
+
+class ChangeOrdersCount(serializers.Serializer):
+    class Meta:
+        fields = ('orders_count')
+
+    def validator(self, data):
+        self.is_valid()
+        print(data['orders_count'])
+        print('@'*100)
+        try:
+            data['orders_count'] = int(data['orders_count'])
+            if data['orders_count'] < 0:
+                raise ValueError
+        except Exception as error:
+            raise serializers.ValidationError({'orders_count': error})
+        return True
 
 
 class TokenBlackListSerializer(serializers.ModelSerializer):
@@ -36,3 +49,6 @@ class TokenBlackListSerializer(serializers.ModelSerializer):
     def validator(self, data):
         data['exp'] = int(JWT_decode(data['token'])['exp'])
         return self.is_valid()
+
+# 7295
+# 5660

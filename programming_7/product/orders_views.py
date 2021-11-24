@@ -9,6 +9,8 @@ from certificate.models import Certificate
 from certificate.serializers import CertificateSerializer
 from product.models import Product
 from product.serializers import ProductSerializer, OrderSerializer
+from user.models import User
+from user.serializers import UserSerializer
 
 
 class view(APIView):
@@ -18,7 +20,7 @@ class view(APIView):
         data = JSONParser().parse(request)
         serializer = OrderSerializer(data=data)
         user = request.user
-        if serializer.validator(data, user.id):
+        if serializer.validator(data, user):
             new_certificate_data = \
             {
                 'type': data['type'],
@@ -37,13 +39,19 @@ class view(APIView):
                     'name': data['name'],
                     'count': product.count - 1
                 }
-
+            user = User.objects.get(pk=user.id)
+            new_user_data = UserSerializer(user).data
+            new_user_data['orders_count'] = user.orders_count - 1
+            new_user_data['password'] = user.password
+            new_user_serializer = UserSerializer(user, data=new_user_data)
             new_certificate_serializer = CertificateSerializer(data=new_certificate_data)
             new_product_serializer = ProductSerializer(product, data=new_product_data)
 
-            if new_certificate_serializer.is_valid() and new_product_serializer.is_valid():
+            if new_certificate_serializer.is_valid() and new_product_serializer.is_valid() and \
+                    new_user_serializer.is_valid():
                 new_certificate_serializer.save()
                 new_product_serializer.save()
+                new_user_serializer.save()
                 return Response(new_certificate_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

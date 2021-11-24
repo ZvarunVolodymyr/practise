@@ -74,8 +74,9 @@ def is_date_in_range(date, start, end):
 
 
 def ymd_to_dmy(date):
-    return '.'.join(reversed(date.split('-')))
+
+    return '.'.join(reversed(str(date).split('-')))
 
 
 def dmy_to_ymd(date):
-    return '-'.join(reversed(date.split('.')))
+    return '-'.join(reversed(str(date).split('.')))

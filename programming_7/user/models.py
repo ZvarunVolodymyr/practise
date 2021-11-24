@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
             print(errors)
             exit(0)
         email = self.normalize_email(email)
-        user = self.model(email=email, password=password, **extra_fields)
+        user = self.model(email=email, password=password, orders_count=2, **extra_fields)
         user.save(using=self._db)
 
         return user
@@ -52,9 +52,10 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     # id_of_certificate = models.IntegerField(unique=True)
     email = models.EmailField(max_length=40, unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     birth_date = models.DateField()
+    orders_count = models.IntegerField(default=2)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

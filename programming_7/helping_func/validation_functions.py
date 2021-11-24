@@ -4,8 +4,8 @@ from helping_func import date_functions, security
 
 
 def get_validation_functions(name):
-    a = {'id': is_empty, 'name': is_name, 'count': is_count, 'date': is_date, 'is_type': is_type,
-         'type': is_type, 'vaccine': is_vaccine, 'username': is_username, 'birth_date': is_birth_date,
+    a = {'id': is_empty, 'orders_count': is_count, 'name': is_name, 'count': is_count, 'date': is_date,
+         'is_type': is_type, 'type': is_type, 'vaccine': is_vaccine, 'username': is_username, 'birth_date': is_birth_date,
          'start_date': is_start_date, 'end_date': is_end_date, 'international_passport': is_international_passport,
          'first_name': is_username, 'last_name': is_username, 'email': is_empty, 'password': is_password
          }
@@ -79,6 +79,10 @@ def is_type(n):
 
 @attributes
 def is_username(n):
+    print(n)
+    print('@' * 100)
+    if len(n) == 0:
+        raise ValueError(str(n) + ' не є username')
     list_ = n.split('_')
     for name in n.split('_'):
         if not name.isalpha():
@@ -139,3 +143,4 @@ def is_password(n):
     if len(re.findall('\w', n)) != len(n):
         raise ValueError(str(n) + ' не має містити непідходящих символів')
     return security.hash(n)
+
