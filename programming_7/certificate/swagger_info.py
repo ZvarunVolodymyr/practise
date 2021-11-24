@@ -3,7 +3,8 @@ from drf_yasg.utils import swagger_auto_schema
 from certificate.serializers import CertificateSerializer
 
 properties = {
-                "id": openapi.Schema(description='id id certificate', type=openapi.TYPE_INTEGER),
+                "id": openapi.Schema(description='id certificate', type=openapi.TYPE_INTEGER),
+                "type": openapi.Schema(description='type of certificate', type=openapi.TYPE_STRING),
                 'username': openapi.Schema(description='name, only chars', type=openapi.TYPE_STRING),
                 'birth_date': openapi.Schema(description='date of birth', type=openapi.FORMAT_DATE),
                 'start_date': openapi.Schema(description='start date of certificate', type=openapi.FORMAT_DATE),
@@ -14,6 +15,7 @@ properties = {
                                           type=openapi.TYPE_STRING),
             }
 example = {
+                'type': 'green',
                 'username': 'name',
                 "birth_date": "2001-1-1",
                 "start_date": "2001-5-1",
@@ -22,20 +24,32 @@ example = {
                 "vaccine": "pfizer"
             }
 
+
 def list_post():
     return swagger_auto_schema(
         operation_description="post new certificate",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=['username', 'birth_date', 'start_date', 'end_date', 'international_passport', 'vaccine'],
+
             properties=properties,
             example=example),
             responses={
                 201: openapi.Response(
-                    description="certificate added successful"
+                    description="certificate added successful",
+                    examples={
+                        'application/json': {
+                            'message': str(example),
+                            'status': '201'}
+                    }
                 ),
                 400: openapi.Response(
                     description="certificate invalid",
+                    examples={
+                        'application/json': {
+                            'message': "ab1 : не є ім'ям",
+                            'status': '400'}
+                    }
                 )
             }
     )
@@ -46,7 +60,12 @@ def list_delete():
         operation_description="remove all certificates",
         responses={
             204: openapi.Response(
-                description="certificates deleted"
+                description="certificates deleted",
+                examples={
+                    'application/json':{
+                    'message': f'{5} сертифікатів успішно видалено',
+                    'status': '204'}
+                }
             )
         }
     )
@@ -63,35 +82,76 @@ def detail_put():
         ),
         responses={
             200: openapi.Response(
-                description="certificate changed successful"
+                description="certificate changed successful",
+                examples={
+                    'application/json': {
+                        'message': str(example),
+                        'status': '200'}
+                }
             ),
             400: openapi.Response(
                 description="certificate invalid",
+                examples={
+                    'application/json': {
+                        'message':  "ab1 : не є ім'ям",
+                        'status': '400'}
+                }
+            ),
+            404: openapi.Response(
+                description="invalid id",
+                examples={
+                    'application/json': {
+                        'message': "сертифікату з таким ід не існує",
+                        'status': '404'}
+                }
             )
         },
-        tags=['detail']
     )
 
 
 def detail_get():
     return swagger_auto_schema(
         operation_description="return certificate by id",
-        tags=['detail'],
         responses={
                     200: openapi.Response(
-                        description="success"
+                        description="success",
+                        examples={
+                            'application/json': {
+                                'message': str(example),
+                                'status': '200'}
+                        }
+                    ),
+                    404: openapi.Response(
+                        description="invalid id",
+                        examples={
+                            'application/json': {
+                                'message': "сертифікату з таким ід не існує",
+                                'status': '404'}
+                        }
                     )
-                    }
+        }
     )
 
 
 def detail_delete():
     return swagger_auto_schema(
         operation_description="delete certificate by id",
-        tags=['detail'],
         responses={
             204: openapi.Response(
-                description="certificate deleted"
+                description="certificate deleted",
+                examples={
+                    'application/json': {
+                        'message': f'сертифікат успішно видалено',
+                        'status': '204'}
+            }
+            ),
+            404: openapi.Response(
+                description="invalid id",
+                examples={
+                    'application/json': {
+                        'message': "сертифікату з таким ід не існує",
+                        'status': '404'}
+                }
             )
         }
     )

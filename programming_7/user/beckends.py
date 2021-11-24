@@ -1,11 +1,8 @@
-import jwt
-
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import authentication, exceptions
-from user.security import JWT_decode
-from user.models import User
+from helping_func.security import JWT_decode
+from user.models import User, TokenBlackList
 
 
 class JWTAuthentication(authentication.BaseAuthentication):
@@ -23,6 +20,11 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         if prefix.lower() != prefix.lower():
             return None
+        try:
+            token_test = TokenBlackList.objects.get(token=token)
+            raise exceptions.AuthenticationFailed('помилка авторизації')
+        except ObjectDoesNotExist:
+            pass
         token = JWT_decode(token)
         try:
             user = User.objects.get(email=token['email'])

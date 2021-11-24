@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^', include('certificate.urls')),
     url(r'^', include('user.urls')),
+    url(r'^', include('product.urls')),
 ]
